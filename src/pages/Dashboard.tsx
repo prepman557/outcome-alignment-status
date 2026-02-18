@@ -44,6 +44,8 @@ export default function Dashboard({ accounts }: { accounts: Account[] }) {
             <TableRow>
               <TableHead>Company</TableHead>
               <TableHead>Industry</TableHead>
+              <TableHead>Business Outcome</TableHead>
+              <TableHead>Score</TableHead>
               <TableHead>Renewal</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Expansion</TableHead>
@@ -58,6 +60,26 @@ export default function Dashboard({ accounts }: { accounts: Account[] }) {
                 <TableRow key={account.id}>
                   <TableCell className="font-medium">{account.companyName}</TableCell>
                   <TableCell className="text-muted-foreground">{account.industry}</TableCell>
+                  <TableCell className="max-w-[180px]">
+                    {account.desiredOutcome ? (
+                      <span className="truncate block text-sm" title={account.desiredOutcome}>{account.desiredOutcome}</span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">Not defined</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex gap-0.5">
+                        {[1,2,3,4,5].map((i) => (
+                          <div
+                            key={i}
+                            className={`h-2 w-3 rounded-sm ${i <= account.confidenceLevel ? "bg-primary" : "bg-muted"}`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-xs text-muted-foreground">{account.confidenceLevel}/5</span>
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                       <CalendarDays className="h-3.5 w-3.5" />
