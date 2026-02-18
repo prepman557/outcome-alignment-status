@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
-import { Account, getAlignmentStatus, isExpansionReady } from "@/lib/accounts";
+import { Account, getAlignmentStatus } from "@/lib/accounts";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CalendarDays, Building2, ArrowRight, TrendingUp } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { CalendarDays, Building2, ArrowRight } from "lucide-react";
 
 export default function Dashboard({ accounts }: { accounts: Account[] }) {
   if (accounts.length === 0) {
@@ -21,21 +20,11 @@ export default function Dashboard({ accounts }: { accounts: Account[] }) {
     );
   }
 
-  const expansionCount = accounts.filter(isExpansionReady).length;
-
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Accounts</h1>
-          <p className="text-sm text-muted-foreground">Track outcome alignment across your portfolio.</p>
-        </div>
-        {expansionCount > 0 && (
-          <div className="flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-800">
-            <TrendingUp className="h-3.5 w-3.5" />
-            {expansionCount} expansion {expansionCount === 1 ? "opportunity" : "opportunities"}
-          </div>
-        )}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight">Accounts</h1>
+        <p className="text-sm text-muted-foreground">Track outcome alignment across your portfolio.</p>
       </div>
 
       <Card>
@@ -44,42 +33,18 @@ export default function Dashboard({ accounts }: { accounts: Account[] }) {
             <TableRow>
               <TableHead>Company</TableHead>
               <TableHead>Industry</TableHead>
-              <TableHead>Business Outcome</TableHead>
-              <TableHead>Score</TableHead>
               <TableHead>Renewal</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Expansion</TableHead>
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {accounts.map((account) => {
               const status = getAlignmentStatus(account);
-              const hasExpansion = isExpansionReady(account);
               return (
                 <TableRow key={account.id}>
                   <TableCell className="font-medium">{account.companyName}</TableCell>
                   <TableCell className="text-muted-foreground">{account.industry}</TableCell>
-                  <TableCell className="max-w-[180px]">
-                    {account.desiredOutcome ? (
-                      <span className="truncate block text-sm" title={account.desiredOutcome}>{account.desiredOutcome}</span>
-                    ) : (
-                      <span className="text-xs text-muted-foreground italic">Not defined</span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1.5">
-                      <div className="flex gap-0.5">
-                        {[1,2,3,4,5].map((i) => (
-                          <div
-                            key={i}
-                            className={`h-2 w-3 rounded-sm ${i <= account.confidenceLevel ? "bg-primary" : "bg-muted"}`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-xs text-muted-foreground">{account.confidenceLevel}/5</span>
-                    </div>
-                  </TableCell>
                   <TableCell>
                     <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
                       <CalendarDays className="h-3.5 w-3.5" />
@@ -92,23 +57,6 @@ export default function Dashboard({ accounts }: { accounts: Account[] }) {
                   </TableCell>
                   <TableCell>
                     <StatusBadge status={status} />
-                  </TableCell>
-                  <TableCell>
-                    {hasExpansion ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
-                            <TrendingUp className="h-3 w-3" />
-                            {account.expansion.type} · {account.expansion.stage}
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{account.expansion.estimatedValue} — {account.expansion.trigger}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
                   </TableCell>
                   <TableCell>
                     <Link
