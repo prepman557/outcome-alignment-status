@@ -1,14 +1,3 @@
-export type ExpansionType = "Upsell" | "Cross-sell" | "Upgrade" | "Add-on" | "";
-export type ExpansionStage = "Identified" | "Qualified" | "Proposed" | "Committed" | "";
-
-export interface ExpansionOpportunity {
-  type: ExpansionType;
-  stage: ExpansionStage;
-  estimatedValue: string;
-  trigger: string;
-  notes: string;
-}
-
 export interface Account {
   id: string;
   companyName: string;
@@ -19,7 +8,6 @@ export interface Account {
   executiveSponsor: string;
   reviewCadence: "Monthly" | "Quarterly" | "None" | "";
   confidenceLevel: number;
-  expansion: ExpansionOpportunity;
 }
 
 export type AlignmentStatus = "green" | "yellow" | "red";
@@ -37,18 +25,6 @@ export function getAlignmentStatus(account: Account): AlignmentStatus {
   return "green";
 }
 
-export function isExpansionReady(account: Account): boolean {
-  return getAlignmentStatus(account) === "green" && account.expansion.type !== "";
-}
-
-const emptyExpansion: ExpansionOpportunity = {
-  type: "",
-  stage: "",
-  estimatedValue: "",
-  trigger: "",
-  notes: "",
-};
-
 export const MOCK_ACCOUNTS: Account[] = [
   {
     id: "1",
@@ -60,13 +36,6 @@ export const MOCK_ACCOUNTS: Account[] = [
     executiveSponsor: "Jane Smith, VP CS",
     reviewCadence: "Monthly",
     confidenceLevel: 4,
-    expansion: {
-      type: "Upsell",
-      stage: "Qualified",
-      estimatedValue: "$45,000",
-      trigger: "Exceeded adoption targets in Q1",
-      notes: "Champion interested in premium tier",
-    },
   },
   {
     id: "2",
@@ -78,7 +47,6 @@ export const MOCK_ACCOUNTS: Account[] = [
     executiveSponsor: "",
     reviewCadence: "Quarterly",
     confidenceLevel: 2,
-    expansion: { ...emptyExpansion },
   },
   {
     id: "3",
@@ -90,7 +58,6 @@ export const MOCK_ACCOUNTS: Account[] = [
     executiveSponsor: "",
     reviewCadence: "",
     confidenceLevel: 1,
-    expansion: { ...emptyExpansion },
   },
   {
     id: "4",
@@ -102,12 +69,5 @@ export const MOCK_ACCOUNTS: Account[] = [
     executiveSponsor: "Tom Lee, CTO",
     reviewCadence: "Monthly",
     confidenceLevel: 5,
-    expansion: {
-      type: "Cross-sell",
-      stage: "Identified",
-      estimatedValue: "$20,000",
-      trigger: "Team expanded to 3 new departments",
-      notes: "",
-    },
   },
 ];
